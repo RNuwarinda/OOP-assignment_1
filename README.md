@@ -90,3 +90,45 @@ compares the observed response with the matrix condition number.
 linear combination of existing rows, the determinant is zero and the condition
 number is infinite; the system cannot uniquely identify all three source values.
 Micro-grid tests are in `tests/test_microgrid.py` and run with `python -m pytest`.
+
+Lake Victoria Fish Stock
+------------------------
+
+The class-only stock, price, and risk models are in `src/fishstock.py`; the
+scenario and Monte Carlo workflow is in `src/fishstock_analysis.py`. Run the
+52-week harvest and price analysis with:
+
+    python src/fishstock_analysis.py
+
+Open `fish_stock_risk.ipynb` for the interactive results, scenario tables, and
+plots. The analysis uses seeded bounded price paths, 1,000 simulations, and
+provisional CV categories (Low <10%, Moderate 10-25%, High >=25%). Its 5% VaR
+is the fifth percentile of annual revenue, not the loss percentile. Revenue
+variance is measured in UGX squared, so a fixed raw threshold is not a
+scale-independent risk rule. Harvest rates and the eight-week closed season are
+illustrative model scenarios; validate them against local ecological and market
+data before operational use. Fish-stock tests are in `tests/test_fishstock.py`.
+
+Rainfall Pattern & Crop Suitability
+-----------------------------------
+
+The `Region` and `CropRule` classes are in `src/rainfall.py`; the classifier,
+similarity/peak analyses, plotting, and NASA POWER download are in
+`src/rainfall_analysis.py`. Run the illustrative three-region analysis with:
+
+    python src/rainfall_analysis.py
+
+Open `rainfall_crop_analyser.ipynb` for the crop/month classifications,
+cosine/Pearson/Euclidean matrices, detected seasons, advisory note, and figures.
+Crop rainfall cutoffs are explicitly screening proxies derived from FAO crop
+water totals and season lengths, not locally calibrated agronomic prescriptions.
+References: [FAO Irrigation Water Management Training Manual 3, Chapter 3](https://www.fao.org/4/s2022e/s2022e07.htm)
+and the [World Bank Uganda historical climate portal](https://climateknowledgeportal.worldbank.org/country/uganda/climate-data-historical).
+
+The optional 10-year extension uses the NASA POWER monthly point API and saves
+`data/nasa_power_rainfall_2015_2024.csv` plus monthly box plots at
+`outputs/nasa_monthly_rainfall_boxplots.png`. Its monthly rainfall totals are
+computed from the API's `mm/day` values using each month's actual number of days.
+The illustrative line/heatmap figure is `outputs/rainfall_crop_suitability.png`.
+Run all project tests with `python -m pytest`; rainfall tests are in
+`tests/test_rainfall.py`.
