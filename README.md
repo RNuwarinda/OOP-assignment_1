@@ -57,3 +57,36 @@ Classroom estimates assume 18% of the population is primary-school age and 53
 pupils per classroom. The additional-room figure is 2029 required classrooms
 minus 2024 required classrooms, with each year's classroom requirement rounded
 up to a whole room. Population inputs and forecasts are expressed in thousands.
+
+Kasese Micro-grid
+-----------------
+
+The micro-grid OOP solvers are in `src/microgrid.py`; input, generated data,
+analysis, and plotting are in `src/microgrid_analysis.py`. Run the seeded
+30-day CSV analysis (generating `data/kasese_demands.csv` if it does not exist):
+
+    python src/microgrid_analysis.py
+
+Use `python src/microgrid_analysis.py --csv path/to/demands.csv` to load a CSV,
+or `python src/microgrid_analysis.py --interactive` to validate and solve one
+day's demands interactively. The report saves `outputs/microgrid_usage_cost.png`.
+The 30-day sum is labeled as the monthly cost for this illustrative month.
+The import-based notebook walkthrough is `microgrid_analysis.ipynb`.
+
+For the base matrix `[[3, 2], [4, 1]]`, the determinant is -5, so the equations
+have a unique exact solution. Its 2-norm condition number is about 5.83: relative
+input errors can be amplified by up to that factor in the worst perturbation
+direction. Negative exact source usage is physically infeasible; the analysis
+flags these days and uses non-negative least squares (NNLS), reporting the
+remaining residual instead of silently clipping the solution.
+
+Usage standard deviation measures absolute volatility, while coefficient of
+variation measures volatility relative to each source's mean. Solar can have a
+larger relative CV despite battery having the larger absolute standard deviation.
+The sensitivity analysis uses 1,000 seeded demand perturbations of +/-5% and
+compares the observed response with the matrix condition number.
+
+`HybridMicroGrid` adds diesel and a total-supply equation. If its new row is a
+linear combination of existing rows, the determinant is zero and the condition
+number is infinite; the system cannot uniquely identify all three source values.
+Micro-grid tests are in `tests/test_microgrid.py` and run with `python -m pytest`.
